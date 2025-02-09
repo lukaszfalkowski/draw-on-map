@@ -5,7 +5,18 @@ body {
 	padding: 0;
 	margin: 0;
 }
-#map-container {
+#lfmde.page-wrapper {
+	display: flex;
+	flex-direction: column;
 	width: 100%;
 	height: 100vh;
+}
+#lfmde .controls {
+	background-color: #fff;
+}
+#lfmde #map-container {
+	background-color: #f0f0f0;
+}
+#lfmde .footer {
+	background-color: #fff;
 }
