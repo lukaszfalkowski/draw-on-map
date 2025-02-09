@@ -9,7 +9,20 @@
 	<link rel="stylesheet" href="draw-on-map.css">
 </head>
 <body>
-	<div id="map-container">
+	<div id="lfmde" class="page-wrapper">
+		<div class="controls">
+			<select class="js-polygon-select">
+				<option value="">Select Polygon</option>
+			</select>
+			<input type="text" class="js-polygon-name" placeholder="Polygon Name">
+			<button class="js-create-polygon-btn">Create New Polygon</button>
+			<button class="js-save-polygon-btn">Save Polygon</button>
+		</div>
+		<div id="map-container">
+		</div>
+		<div class="footer">
+			LF Map Drawing Editor 2025
+		</div>
 	</div>
 	<script type="module" src="draw-on-map.js"></script>
 </body>
