@@ -22,10 +22,10 @@ let drawing = false;
 let currentPolygon = null;
 let polygonCoordinates = [];
 
-const polygonSelect = document.querySelector('js-polygon-select');
-const polygonNameInput = document.querySelector('js-polygon-name');
-const createPolygonButton = document.querySelector('js-create-polygon-btn');
-const savePolygonButton = document.querySelector('js-save-polygon-btn');
+const polygonSelect = document.querySelector('.js-polygon-select');
+const polygonNameInput = document.querySelector('.js-polygon-name');
+const createPolygonButton = document.querySelector('.js-create-polygon-btn');
+const savePolygonButton = document.querySelector('.js-save-polygon-btn');
 
 createPolygonButton.addEventListener('click', () => {
 	drawing = true;
