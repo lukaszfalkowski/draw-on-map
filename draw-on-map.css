@@ -12,11 +12,15 @@ body {
 	height: 100vh;
 }
 #lfmde .controls {
+	height: fit-content;
 	background-color: #fff;
 }
 #lfmde #map-container {
+	height: auto;
+	flex: 1 1 auto;
 	background-color: #f0f0f0;
 }
 #lfmde .footer {
+	height: fit-content;
 	background-color: #fff;
 }
