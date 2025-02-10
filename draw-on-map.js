@@ -17,7 +17,7 @@ var map = new mapboxgl.Map({
 		}],
 	}
 });
-
+const polygons = {};
 let drawing = false;
 let currentPolygon = null;
 let polygonCoordinates = [];
@@ -91,7 +91,8 @@ savePolygonButton.addEventListener('click', () => {
 	// Store the polygon data (you might want to use a more robust storage mechanism)
 	// For this example, we'll just log it to the console
 	console.log({ name: polygonName, geojson: currentPolygon });
-
+	polygons[polygonName] = currentPolygon;
+	
 	// Reset for the next polygon
 	drawing = false;
 	currentPolygon = null;
@@ -101,4 +102,44 @@ savePolygonButton.addEventListener('click', () => {
 	//Remove the layer and source from the map
 	map.removeLayer('polygon-layer');
 	map.removeSource('polygon-source');
+});
+
+polygonSelect.addEventListener('change', () => {
+	const selectedPolygonName = polygonSelect.value;
+	if (!selectedPolygonName) {
+		return
+	}
+
+	const selectedPolygon = polygons[selectedPolygonName];
+	if (!selectedPolygon) {
+		return
+	}
+
+	//Remove the layer and source from the map if they exist
+	if (map.getSource('polygon-source')) {
+		map.removeLayer('polygon-layer');
+		map.removeSource('polygon-source');
+	}
+
+	map.addSource('polygon-source', {
+		type: 'geojson',
+		data: selectedPolygon
+	});
+
+	map.addLayer({
+		id: 'polygon-layer',
+		type: 'fill',
+		source: 'polygon-source',
+		paint: {
+			'fill-color': 'blue',
+			'fill-opacity': 0.5
+		}
+	});
+
+	// Fit the map to the selected polygon
+	const bounds = new mapboxgl.LngLatBounds();
+	selectedPolygon.geometry.coordinates[0].forEach(coord => {
+		bounds.extend(coord);
+	});
+	map.fitBounds(bounds, { padding: 50 });  // Add padding for better visualization
 });
