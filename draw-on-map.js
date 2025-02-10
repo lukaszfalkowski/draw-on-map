@@ -17,7 +17,7 @@ var map = new mapboxgl.Map({
 		}],
 	}
 });
-
+console.log('testin');
 const polygons = {};
 let drawing = false;
 let currentPolygon = null;
