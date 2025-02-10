@@ -17,15 +17,29 @@ var map = new mapboxgl.Map({
 		}],
 	}
 });
+
 const polygons = {};
 let drawing = false;
 let currentPolygon = null;
 let polygonCoordinates = [];
 
-const polygonSelect = document.querySelector('.js-polygon-select');
-const polygonNameInput = document.querySelector('.js-polygon-name');
-const createPolygonButton = document.querySelector('.js-create-polygon-btn');
-const savePolygonButton = document.querySelector('.js-save-polygon-btn');
+let editing = false;
+let markers = [];
+let selectedVertexIndex = null; // Track the currently selected vertex
+
+const editorDiv = document.getElementById('lfmde');
+
+const polygonSelect = editorDiv.querySelector('.js-polygon-select');
+const polygonNameInput = editorDiv.querySelector('.js-polygon-name');
+const createPolygonButton = editorDiv.querySelector('.js-create-polygon-btn');
+const savePolygonButton = editorDiv.querySelector('.js-save-polygon-btn');
+const editShapeButton = editorDiv.querySelector('.js-edit-shape');
+
+const editInputs = editorDiv.querySelector('.js-edit-inputs');
+const latInput = editorDiv.querySelector('.js-lat-input');
+const lngInput = editorDiv.querySelector('.js-lng-input');
+const updateVertexButton = editorDiv.querySelector('.js-update-vertex');
+
 
 createPolygonButton.addEventListener('click', () => {
 	drawing = true;
@@ -142,4 +156,74 @@ polygonSelect.addEventListener('change', () => {
 		bounds.extend(coord);
 	});
 	map.fitBounds(bounds, { padding: 50 });  // Add padding for better visualization
+});
+
+editShapeButton.addEventListener('click', () => {
+	editing = !editing; // Toggle editing mode
+
+	if (!editing) {
+		// Remove markers and hide input fields when editing is turned off
+		markers.forEach(marker => marker.remove());
+		markers = [];
+		editInputs.style.display = 'none';
+		selectedVertexIndex = null;
+		return;
+	}
+
+	if (!map.getSource('polygon-source')) { // Ensure a polygon is loaded
+		alert("Please load a polygon to edit.");
+		editing = false; // Turn editing off since there's no polygon to edit.
+		return;
+	}
+
+	const polygon = map.getSource('polygon-source')._data; // Get the polygon data
+
+	// Create draggable markers for each vertex
+	polygon.geometry.coordinates[0].forEach((coord, index) => {
+		const marker = new mapboxgl.Marker({ element: createMarkerElement() , draggable: true })
+			.setLngLat(coord)
+			.addTo(map);
+
+		markers.push(marker);
+
+		marker.getElement().addEventListener('click', () => {
+			selectedVertexIndex = index; // Store the index of the clicked vertex
+			editInputs.style.display = 'block'; // Show the input fields
+			latInput.value = coord[1]; // Fill in current latitude
+			lngInput.value = coord[0]; // Fill in current longitude
+		});
+
+		marker.on('dragend', () => {
+			const newLngLat = marker.getLngLat();
+			polygon.geometry.coordinates[0][index] = [newLngLat.lng, newLngLat.lat];
+			map.getSource('polygon-source').setData(polygon); // Update the source
+		});
+	});
+});
+
+
+function createMarkerElement() {
+	const el = document.createElement('div');
+	el.className = 'draggable-marker';
+	return el;
+}
+
+updateVertexButton.addEventListener('click', () => {
+	if (selectedVertexIndex === null) {
+		return;
+	}
+
+	const newLat = parseFloat(latInput.value);
+	const newLng = parseFloat(lngInput.value);
+
+	if (isNaN(newLat) || isNaN(newLng)) {
+		alert("Please enter valid latitude and longitude values.");
+		return;
+	}
+
+	const polygon = map.getSource('polygon-source')._data;
+	polygon.geometry.coordinates[0][selectedVertexIndex] = [newLng, newLat];
+	map.getSource('polygon-source').setData(polygon);
+	markers[selectedVertexIndex].setLngLat([newLng, newLat]); // Update Marker
+	editInputs.style.display = 'none'; // Hide input fields after update
 });
