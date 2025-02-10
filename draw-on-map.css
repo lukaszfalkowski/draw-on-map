@@ -24,3 +24,23 @@ body {
 	height: fit-content;
 	background-color: #fff;
 }
+#lfmde .draggable-marker {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background-color: red;
+	cursor: grab; /* Use a grab cursor */
+}
+#lfmde .draggable-marker:active {
+	cursor: grabbing; /* Use a grabbing cursor while dragging */
+}
+#lfmde #edit-inputs {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 101; /* Ensure it's above the map */
+	background-color: white;
+	padding: 5px;
+	border-radius: 5px;
+	display: none; /* Initially hidden */
+}
