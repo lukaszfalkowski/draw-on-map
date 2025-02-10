@@ -34,7 +34,7 @@ body {
 #lfmde .draggable-marker:active {
 	cursor: grabbing; /* Use a grabbing cursor while dragging */
 }
-#lfmde #edit-inputs {
+#lfmde .edit-inputs {
 	position: absolute;
 	top: 10px;
 	left: 10px;
